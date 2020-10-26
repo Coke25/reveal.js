@@ -170,69 +170,69 @@ gulp.task('css', gulp.parallel('css-themes', 'css-core'))
 
 gulp.task('qunit', () => {
 
-    let serverConfig = {
-        root,
-        port: 8009,
-        host: '0.0.0.0',
-        name: 'test-server'
-    }
+    // let serverConfig = {
+    //     root,
+    //     port: 8009,
+    //     host: '0.0.0.0',
+    //     name: 'test-server'
+    // }
 
-    let server = connect.server( serverConfig )
+    // let server = connect.server( serverConfig )
 
-    let testFiles = glob.sync('test/*.html' )
+    // let testFiles = glob.sync('test/*.html' )
 
-    let totalTests = 0;
-    let failingTests = 0;
+    // let totalTests = 0;
+    // let failingTests = 0;
 
-    let tests = Promise.all( testFiles.map( filename => {
-        return new Promise( ( resolve, reject ) => {
-            qunit.runQunitPuppeteer({
-                targetUrl: `http://${serverConfig.host}:${serverConfig.port}/${filename}`,
-                timeout: 20000,
-                redirectConsole: false,
-                puppeteerArgs: ['--allow-file-access-from-files']
-            })
-                .then(result => {
-                    if( result.stats.failed > 0 ) {
-                        console.log(`${'!'} ${filename} [${result.stats.passed}/${result.stats.total}] in ${result.stats.runtime}ms`.red);
-                        // qunit.printResultSummary(result, console);
-                        qunit.printFailedTests(result, console);
-                    }
-                    else {
-                        console.log(`${'✔'} ${filename} [${result.stats.passed}/${result.stats.total}] in ${result.stats.runtime}ms`.green);
-                    }
+    // let tests = Promise.all( testFiles.map( filename => {
+    //     return new Promise( ( resolve, reject ) => {
+    //         qunit.runQunitPuppeteer({
+    //             targetUrl: `http://${serverConfig.host}:${serverConfig.port}/${filename}`,
+    //             timeout: 20000,
+    //             redirectConsole: false,
+    //             puppeteerArgs: ['--allow-file-access-from-files']
+    //         })
+    //             .then(result => {
+    //                 if( result.stats.failed > 0 ) {
+    //                     console.log(`${'!'} ${filename} [${result.stats.passed}/${result.stats.total}] in ${result.stats.runtime}ms`.red);
+    //                     // qunit.printResultSummary(result, console);
+    //                     qunit.printFailedTests(result, console);
+    //                 }
+    //                 else {
+    //                     console.log(`${'✔'} ${filename} [${result.stats.passed}/${result.stats.total}] in ${result.stats.runtime}ms`.green);
+    //                 }
 
-                    totalTests += result.stats.total;
-                    failingTests += result.stats.failed;
+    //                 totalTests += result.stats.total;
+    //                 failingTests += result.stats.failed;
 
-                    resolve();
-                })
-                .catch(error => {
-                    console.error(error);
-                    reject();
-                });
-        } )
-    } ) );
+    //                 resolve();
+    //             })
+    //             .catch(error => {
+    //                 console.error(error);
+    //                 reject();
+    //             });
+    //     } )
+    // } ) );
 
-    return new Promise( ( resolve, reject ) => {
+    // return new Promise( ( resolve, reject ) => {
 
-        tests.then( () => {
-                if( failingTests > 0 ) {
-                    reject( new Error(`${failingTests}/${totalTests} tests failed`.red) );
-                }
-                else {
-                    console.log(`${'✔'} Passed ${totalTests} tests`.green.bold);
-                    resolve();
-                }
-            } )
-            .catch( () => {
-                reject();
-            } )
-            .finally( () => {
-                server.close();
-            } );
+    //     tests.then( () => {
+    //             if( failingTests > 0 ) {
+    //                 reject( new Error(`${failingTests}/${totalTests} tests failed`.red) );
+    //             }
+    //             else {
+    //                 console.log(`${'✔'} Passed ${totalTests} tests`.green.bold);
+    //                 resolve();
+    //             }
+    //         } )
+    //         .catch( () => {
+    //             reject();
+    //         } )
+    //         .finally( () => {
+    //             server.close();
+    //         } );
 
-    } );
+    // } );
 } )
 
 gulp.task('eslint', () => gulp.src(['./js/**', 'gulpfile.js'])
@@ -241,7 +241,9 @@ gulp.task('eslint', () => gulp.src(['./js/**', 'gulpfile.js'])
 
 gulp.task('test', gulp.series( 'eslint', 'qunit' ))
 
-gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins'), 'test'))
+// gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins'), 'test'))
+
+gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins')))
 
 gulp.task('build', gulp.parallel('js', 'css', 'plugins'))
 
@@ -288,6 +290,6 @@ gulp.task('serve', () => {
         'css/print/*.{sass,scss,css}'
     ], gulp.series('css-core', 'reload'))
 
-    gulp.watch(['test/*.html'], gulp.series('test'))
+    // gulp.watch(['test/*.html'], gulp.series('test'))
 
 })
